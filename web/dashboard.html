@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPC-DynaSurv — 医生工作台</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-logo"> NPC-DynaSurv</div>
+        <div class="sidebar-doctor-info">
+            <div class="doctor-name" id="sidebar-name">---</div>
+            <div class="doctor-dept" id="sidebar-dept">---</div>
+            <div class="doctor-dept" id="sidebar-hospital" style="font-size:12px;"></div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="active">📋 患者列表</a>
+            <a href="#" onclick="showProfile()">👤 我的资料</a>
+        </nav>
+        <div class="sidebar-logout">
+            <button class="btn btn-outline btn-sm" style="width:100%;color:#fff;border-color:rgba(255,255,255,0.3);" onclick="handleLogout()">退出登录</button>
+        </div>
+    </aside>
+
+    <main class="dashboard-main">
+        <div class="dashboard-header">
+            <h1>患者管理</h1>
+            <button class="btn btn-primary" onclick="openUploadModal()">+ 添加患者</button>
+        </div>
+
+        <div id="patient-list" class="patient-grid">
+            <div class="loading"><div class="spinner"></div><p>加载中...</p></div>
+        </div>
+    </main>
+</div>
+
+<!-- Profile Modal -->
+<div class="modal-overlay" id="profile-modal">
+    <div class="modal">
+        <h2>我的资料</h2>
+        <div id="profile-content"></div>
+        <div class="modal-actions">
+            <button class="btn btn-outline" onclick="closeProfile()">关闭</button>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal-overlay" id="upload-modal">
+    <div class="modal">
+        <h2>添加患者</h2>
+        <div id="upload-error" class="alert alert-error" style="display:none;"></div>
+        <p style="font-size:13px;color:#888;margin-bottom:12px;">上传患者 Excel 文件（含 id、Phase、Visit_ID 等列）</p>
+        <div class="file-upload-area" id="drop-area" onclick="document.getElementById('file-input').click()">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text" id="upload-text">拖拽文件到此处上传</div>
+            <div class="upload-text" style="font-size:12px;color:#aaa;">支持 .xlsx / .xls</div>
+            <input type="file" id="file-input" accept=".xlsx,.xls" onchange="onFileSelected(event)">
+        </div>
+        <div id="upload-filename" style="font-size:13px;color:#1B3A5C;font-weight:600;margin-bottom:8px;"></div>
+        <div class="modal-actions">
+            <button class="btn btn-outline" onclick="closeUploadModal()">取消</button>
+            <button class="btn btn-primary" id="upload-btn" onclick="handleUpload()" disabled>上传并导入</button>
+        </div>
+    </div>
+</div>
+
+<script src="/js/dashboard.js"></script>
+</body>
+</html>

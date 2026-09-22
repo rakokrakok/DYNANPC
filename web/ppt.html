@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPC-DynaSurv — 患者风险监测</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="ppt-layout">
+    <!-- ====== Top Navbar ====== -->
+    <header class="ppt-navbar">
+        <div class="navbar-brand">
+            <span class="brand-icon">🏥</span>
+            <span>NPC-DynaSurv</span>
+        </div>
+        <div class="navbar-info">
+            <span class="patient-id-label" id="navbar-patient-id">Patient ID: ---</span>
+            <select id="visit-selector" onchange="onVisitSelect(this.value)">
+                <option value="">加载中...</option>
+            </select>
+            <button class="btn-back" onclick="goBack()">← 返回仪表盘</button>
+        </div>
+    </header>
+
+    <!-- ====== Body: Sidebar + Content ====== -->
+    <div class="ppt-body">
+        <!-- Left Sidebar -->
+        <aside class="ppt-sidebar">
+            <!-- ❶ Patient Profile -->
+            <div class="sidebar-section">
+                <div class="section-title">
+                    <span class="circle-num">1</span> Patient Profile
+                </div>
+                <table class="profile-table" id="profile-table">
+                    <tr><td>Name</td><td id="prof-name">---</td></tr>
+                    <tr><td>Sex</td><td id="prof-sex">---</td></tr>
+                    <tr><td>Age</td><td id="prof-age">---</td></tr>
+                    <tr><td>T stage</td><td id="prof-t">---</td></tr>
+                    <tr><td>N stage</td><td id="prof-n">---</td></tr>
+                    <tr><td>M stage</td><td id="prof-m">---</td></tr>
+                    <tr><td>Overall stage</td><td id="prof-stage">---</td></tr>
+                    <tr><td>Treatment</td><td id="prof-treatment">---</td></tr>
+                    <tr><td>Treatment end</td><td id="prof-end">---</td></tr>
+                </table>
+            </div>
+
+            <!-- ❷ Follow-up History -->
+            <div class="sidebar-section">
+                <div class="section-title">
+                    <span class="circle-num">2</span> Follow-up History
+                </div>
+                <ul class="followup-list" id="followup-list">
+                    <li>加载中...</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Right Content Area -->
+        <main class="ppt-content">
+            <!-- 1. Dynamic Risk Trajectory Chart -->
+            <div class="ppt-card" style="flex:1; min-height:320px;">
+                <div class="card-title">Dynamic Risk Trajectory</div>
+                <div class="chart-container">
+                    <canvas id="trajectory-chart"></canvas>
+                </div>
+                <div class="chart-legend">
+                    <span><span class="legend-dot" style="background:#2563EB;"></span> DFS</span>
+                    <span><span class="legend-dot" style="background:#F59E0B;"></span> DMFS</span>
+                    <span><span class="legend-dot" style="background:#10B981;"></span> LRRFS</span>
+                    <span><span class="legend-dot" style="background:#EF4444;"></span> OS</span>
+                </div>
+                <div class="threshold-labels" style="margin-top:4px;">
+                    <span style="color:#999;">--- Moderate/High threshold (15%)</span>
+                    <span style="color:#999;">--- Low/Moderate threshold (5%)</span>
+                </div>
+            </div>
+
+            <!-- Bottom Row: Risk Assessment + AI Recommendation -->
+            <div class="ppt-bottom-row">
+                <!-- 2. Current Risk Assessment -->
+                <div class="ppt-card risk-assessment-card">
+                    <div class="card-title">Current Risk Assessment</div>
+                    <div class="risk-grid">
+                        <div class="risk-item">
+                            <div class="risk-label">DFS</div>
+                            <div class="risk-value" id="risk-dfs">---</div>
+                            <div class="risk-tag moderate" id="risk-dfs-tag" style="display:none;">Moderate Risk</div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-label">DMFS</div>
+                            <div class="risk-value" id="risk-dmfs">---</div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-label">LRRFS</div>
+                            <div class="risk-value" id="risk-lrrfs">---</div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-label">OS</div>
+                            <div class="risk-value" id="risk-os">---</div>
+                        </div>
+                    </div>
+                    <div class="risk-conclusion" id="risk-conclusion">
+                        <div><strong>Dominant risk type:</strong> <span id="risk-dominant">---</span></div>
+                        <div><strong>Recommended follow-up interval:</strong> <span id="risk-interval">---</span></div>
+                    </div>
+                </div>
+
+                <!-- 3. AI Surveillance Recommendation -->
+                <div class="ppt-card">
+                    <div class="card-title">AI Surveillance Recommendation</div>
+                    <div id="ai-content">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="/js/ppt.js"></script>
+</body>
+</html>

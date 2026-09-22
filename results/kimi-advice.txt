@@ -1,0 +1,160 @@
+```json
+{
+  "risk_prediction": {
+    "dfs_12m": 0.153,
+    "dmfs_12m": 0.129,
+    "lrrfs_12m": 0.044,
+    "os_12m": 0.060
+  },
+  "dfs_stratification": {
+    "dfs_group": "HIGH",
+    "base_followup_interval_months": 3
+  },
+  "action_triggers": {
+    "distant_surveillance_trigger": "ON",
+    "locoregional_surveillance_trigger": "ON",
+    "surveillance_direction": "BOTH"
+  },
+  "clinical_override": {
+    "override_required": true,
+    "override_level": "URGENT_EVALUATION",
+    "override_timing_type": "AS_SOON_AS_POSSIBLE",
+    "override_interval_days": null,
+    "override_reason": [
+      "HIGHLY_SUSPICIOUS_IMAGING_OR_CONFIRMED_EVENT"
+    ]
+  },
+  "final_followup": {
+    "routine_followup_interval_months": 3,
+    "MDT_consideration": false
+  },
+  "recommended_examinations": {
+    "annual_safety_status": "UNKNOWN",
+    "required": {
+      "core": [
+        "clinical_history",
+        "physical_examination",
+        "EBV_DNA",
+        "nasopharyngoscopy"
+      ],
+      "locoregional": [
+        "nasopharynx_neck_contrast_MRI",
+        "clinical_review"
+      ],
+      "distant": [
+        "chest_CT",
+        "abdominal_CT"
+      ],
+      "annual_safety": []
+    },
+    "consider": {
+      "locoregional": [],
+      "distant": [],
+      "additional": [
+        "pathology_confirmation_consideration"
+      ],
+      "late_toxicity": [
+        "thyroid_function",
+        "dental_evaluation",
+        "hearing_evaluation",
+        "carotid_assessment",
+        "swallowing_function_evaluation"
+      ]
+    },
+    "omitted_due_to_deduplication": []
+  },
+  "laboratory_context": {
+    "results": [],
+    "has_abnormal_result": false,
+    "has_critical_result": false,
+    "critical_items": []
+  },
+  "laboratory_safety": {
+    "laboratory_safety_alert": false,
+    "clinical_review_required": false
+  },
+  "alerts": {
+    "EBV": [
+      "EBV_UNKNOWN"
+    ],
+    "imaging": [
+      {
+        "modality": "MRI",
+        "status": "ABNORMAL",
+        "finding": "右颈IIa、IIb、III区淋巴结较前明显增大，最大约12mm×16mm，报告提示放疗后未控可疑；鼻咽未见明显肿物；颅底骨质未见破坏"
+      },
+      {
+        "modality": "US",
+        "status": "NORMAL",
+        "finding": "肝脏、脾脏、胰腺未见明显占位性病变；腹主动脉旁未见明确占位病变"
+      },
+      {
+        "modality": "X_ray",
+        "status": "NORMAL",
+        "finding": "右上肺少许纤维增殖灶，余心肺未见明显异常"
+      },
+      {
+        "modality": "CT",
+        "status": "UNKNOWN"
+      },
+      {
+        "modality": "PET",
+        "status": "UNKNOWN"
+      },
+      {
+        "modality": "ECT",
+        "status": "UNKNOWN"
+      }
+    ],
+    "symptoms": [],
+    "laboratory": [
+      "CURRENT_VISIT_LABS_UNKNOWN"
+    ]
+  }
+}
+```
+
+---
+
+## 自然语言随访建议
+
+### 1. 风险等级与下次常规随访时间
+根据动态模型预测，该患者未来12个月DFS条件风险为**15.3%**，风险分层为**HIGH（高危）**。依据规则引擎映射，模型驱动的**常规随访间隔为3个月**；下次常规随访节点理论上应安排在约3个月后。  
+**重要提示**：该常规随访周期由DFS风险等级决定，不因临床异常而被缩短或改写。
+
+### 2. 肿瘤相关复查项目
+基于DMFS与LRRFS双方向均触发（BOTH），需同时强化局部区域与远处转移方向评估：
+
+- **局部区域复发方向（LRRFS 4.4%，触发ON）**：  
+  - **鼻咽+颈部增强MRI**：为必需项目。本次MRI已提示右颈IIa、IIb、III区淋巴结较前明显增大（最大约12mm×16mm），报告提出“放疗后未控？”之可疑描述，需在后续评估中重点复核。  
+  - **电子鼻咽镜**：为核心随访必需项目。  
+  - **临床医生复核（clinical review）**：因影像存在可疑征象，建议尽快由临床医生面诊评估。  
+  - **病理确认**：可考虑由临床医生评估是否需行病理学确认以明确颈部淋巴结性质。
+
+- **远处转移方向（DMFS 12.9%，触发ON）**：  
+  - **胸部CT**：为必需项目。本次胸部X线仅见右上肺少许纤维增殖灶，但不能替代胸部CT。  
+  - **腹部CT**：为必需项目。本次腹部超声未见肝脏、脾脏、胰腺及腹主动脉旁占位，但超声不能替代腹部CT。
+
+- **核心随访项目（每次计划随访必需）**：详细病史询问、体格检查、**EBV-DNA**检测、电子鼻咽镜检查。  
+  **注意**：本次EBV-DNA状态未知/信息不足，建议尽快完善检测，目前无法据此判断EBV动态安全信号。
+
+### 3. 需要提前处理的临床异常（Clinical Override）
+本次MRI已出现**高度可疑影像征象**（右颈多发淋巴结较前明显增大，报告提示放疗后未控可疑），触发**影像学红色安全信号**。  
+规则引擎判定需立即启动**紧急评估（URGENT EVALUATION）**，建议患者**尽快（AS SOON AS POSSIBLE）**返回临床就诊，由医生结合影像进行面诊及进一步决策（包括评估是否需要病理确认），**不得等待3个月后的常规随访节点**。
+
+### 4. 年度安全检查与检查去重
+患者目前处于治疗后0–3年阶段。因近期胸部CT等检查日期缺失，年度安全状态无法自动判定是否到期，建议先核实既往影像记录，确认胸部CT是否已到期并尽快补做。  
+已安排鼻咽+颈部增强MRI，常规颈部超声无需重复（除非需超声引导操作）。
+
+### 5. 一般健康、实验室与晚期并发症建议
+- **实验室方面**：本次随访血常规、生化、甲状腺功能等实验室数据均为**未知/缺失**，建议尽快完善检测，以便评估一般健康状况及治疗相关毒性。  
+- **晚期并发症监测**（独立于肿瘤复发风险）：  
+  - **甲状腺功能**：患者接受颈部放疗，建议每6–12个月监测TSH/FT3/FT4（本次及既往甲状腺功能均未知，建议补查并纳入长期随访）。  
+  - **听力**：有铂类用药史，建议关注听力下降或耳鸣，必要时耳鼻喉科评估。  
+  - **口腔及放射性龋齿**：建议定期口腔评估，关注口干及口腔卫生。  
+  - **颈动脉与心血管风险**：患者有吸烟史，建议长期关注颈动脉斑块及心血管危险因素。  
+  - **颞叶及神经损伤**：结合原发灶情况，MRI复查时同步观察；关注颅神经症状。  
+  - **吞咽与纤维化**：每次随访关注吞咽困难、张口受限或颈部纤维化，必要时康复/营养专科评估。
+
+---
+**判定依据说明**：DFS=15.3%→HIGH→基础间隔3个月；DMFS=12.9%≥3%→ON；LRRFS=4.4%≥3%→ON；surveillance_direction=BOTH；MRI发现高度可疑病灶→override=URGENT_EVALUATION/AS_SOON_AS_POSSIBLE；MDT未触发（非VERY_HIGH且不满足global_high_risk_without_specific_direction）。

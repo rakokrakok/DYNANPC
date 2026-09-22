@@ -1,0 +1,139 @@
+<think>
+好的，我现在需要处理用户的请求，根据提供的规则文档和患者数据生成结构化的随访建议。首先，我需要仔细阅读用户提供的所有信息，包括规则文档、患者基本信息、随访信息、既往随访摘要以及动态模型预测结果。
+
+首先，用户要求严格按照《Rule Engine v1.2》的规则生成结构化结果和自然语言建议。我需要确保理解每个规则的细节，特别是关于DFS分层、检查触发条件、临床覆盖规则等。用户还特别强调了缺失数据的处理原则，比如任何缺失的必要输入字段应设为UNKNOWN，不能默认为其他值。
+
+接下来，我需要分析患者的数据。患者的DFS条件风险是0.153，即15.3%，根据规则中的DFS四级分层，这属于High风险等级，对应的随访间隔是3个月。DMFS风险是12.9%，超过3%，所以触发远处转移检查。LRRFS风险是4.4%，同样超过3%，触发局部区域检查。因此，检查方向应为BOTH。
+
+然后，根据规则，当DFS为High或Very High且DMFS和LRRFS触发时，需要进行特定的检查项目，如鼻咽颈部MRI、鼻咽镜、胸部和腹部CT等。同时，由于患者处于治疗后3.9个月，属于0-3年阶段，年度安全检查需要每年至少一次MRI和胸部CT，即使风险较低也需执行。
+
+接下来处理临床覆盖规则。患者的EBV-DNA状态未知，但根据规则，如果EBV新阳性或持续阳性，可能需要临床覆盖。但当前数据中EBV未知，所以可能不需要触发。此外，影像学检查结果中MRI显示右颈淋巴结增大，可能需要进一步评估，但根据规则，只有当影像高度可疑或病理证实时才触发紧急评估。目前MRI结果未明确可疑，所以可能不需要紧急处理。
+
+实验室数据大部分未知，但之前的检查中ALT、AST等指标正常，没有明显异常，因此实验室安全信号可能不触发。不过，需要检查是否有其他异常，如CRP或LDH升高，但当前数据中这些值未知，无法判断。
+
+最后，生成结构化结果时，需要确保所有字段正确，如DFS分层、触发条件、检查项目、临床覆盖等。同时，自然语言建议需要将结构化结果转化为医生可读的文本，确保不遗漏任何关键点，并遵循规则中的优先级和输出规范。
+
+需要特别注意的是，用户提到的规则执行顺序和优先级，确保所有步骤按顺序处理，避免遗漏。例如，先处理DFS分层，再判断DMFS和LRRFS触发，然后生成检查方案，最后处理临床覆盖和实验室数据。同时，确保所有字段如UNKNOWN的正确使用，不自行推断或修改模型预测的概率和风险等级。
+
+总结来说，我需要逐步应用规则文档中的每个步骤，结合患者的具体数据，生成符合要求的结构化结果和自然语言建议，确保所有细节符合规则，特别是缺失数据的处理和各检查项目的正确触发条件。
+</think>
+
+```json
+{
+  "risk_prediction": {
+    "dfs_12m": 0.153,
+    "dmfs_12m": 0.129,
+    "lrrfs_12m": 0.044,
+    "os_12m": 0.060
+  },
+  "dfs_stratification": {
+    "dfs_group": "HIGH",
+    "base_followup_interval_months": 3
+  },
+  "action_triggers": {
+    "distant_surveillance_trigger": "ON",
+    "locoregional_surveillance_trigger": "ON",
+    "surveillance_direction": "BOTH"
+  },
+  "clinical_override": {
+    "override_required": false,
+    "override_level": "NONE",
+    "override_timing_type": "NONE",
+    "override_interval_days": null,
+    "override_reason": []
+  },
+  "final_followup": {
+    "routine_followup_interval_months": 3,
+    "MDT_consideration": false
+  },
+  "recommended_examinations": {
+    "annual_safety_status": "UNKNOWN",
+    "required": {
+      "core": [
+        "clinical_history",
+        "physical_examination",
+        "EBV_DNA",
+        "nasopharyngoscopy"
+      ],
+      "locoregional": [
+        "nasopharynx_neck_contrast_MRI"
+      ],
+      "distant": [
+        "chest_CT",
+        "abdominal_CT"
+      ],
+      "annual_safety": [
+        "nasopharynx_neck_MRI",
+        "chest_CT"
+      ]
+    },
+    "consider": {
+      "locoregional": [],
+      "distant": [],
+      "additional": [],
+      "late_toxicity": []
+    },
+    "omitted_due_to_deduplication": []
+  },
+  "laboratory_context": {
+    "results": [],
+    "has_abnormal_result": false,
+    "has_critical_result": false,
+    "critical_items": []
+  },
+  "laboratory_safety": {
+    "laboratory_safety_alert": false,
+    "clinical_review_required": false
+  },
+  "alerts": {
+    "EBV": [
+      "EBV_UNKNOWN"
+    ],
+    "imaging": [
+      "MRI: 右颈IIa、IIb、III区淋巴结较前明显增大，放疗后未控？"
+    ],
+    "symptoms": [],
+    "laboratory": []
+  }
+}
+```
+
+### 自然语言随访建议
+
+#### 风险等级与随访间隔
+患者当前DFS 12个月条件风险为15.3%（HIGH风险等级），建议**每3个月**进行一次常规随访。由于DFS风险较高且DMFS/LRRFS均触发检查方向，需同时关注远处转移和局部区域复发风险。
+
+#### 肿瘤相关复查项目
+1. **核心检查**（每次随访必含）：
+   - 病史采集（clinical_history）
+   - 体格检查（physical_examination）
+   - EBV-DNA检测（EBV_DNA）
+   - 电子鼻咽镜（nasopharyngoscopy）
+
+2. **局部区域复发方向检查**（因LRRFS≥3%触发）：
+   - 鼻咽+颈部增强MRI（nasopharynx_neck_contrast_MRI）**REQUIRED**
+   - 电子鼻咽镜（nasopharyngoscopy）**REQUIRED**
+   - 若MRI/鼻咽镜提示可疑病灶（suspicious_lesion=TRUE），需病理确认（pathology_confirmation_consideration=TRUE）并临床复核（clinical_review=REQUIRED）
+
+3. **远处转移方向检查**（因DMFS≥3%触发）：
+   - 胸部CT（chest_CT）**REQUIRED**
+   - 腹部CT（abdominal_CT）**REQUIRED**
+   - 骨转移信号（如新发骨痛、ALP异常、高钙血症、可疑骨病变）需考虑骨扫描/靶向MRI/PET-CT（bone_metastasis_evaluation=CONSIDER）
+
+4. **年度安全检查**（治疗后0-3年）：
+   - 鼻咽+颈部MRI与胸部CT需**每年至少1次**，即使当前风险较低也需执行。
+
+#### 临床异常与安全覆盖
+- **影像学信号**：MRI显示右颈IIa、IIb、III区淋巴结较前明显增大（放疗后未控？），建议临床复核（clinical_review=REQUIRED），但不自动诊断复发。
+- **EBV-DNA**：EBV-DNA信息不足（EBV_UNKNOWN），需完善检测以评估安全信号。
+- **实验室异常**：无明确异常实验室结果，无需额外影像检查。
+
+#### 晚期并发症监测
+- **甲状腺功能**：建议每6-12个月监测TSH/FT3/FT4（因接受颈部放疗）。
+- **口腔健康**：关注放射性龋齿及口腔卫生，定期评估。
+- **听力**：因接受铂类治疗，需关注听力损失/耳鸣，出现症状时进行耳鼻喉科评估。
+
+#### 判定依据说明
+- DFS风险分层依据模型预测的15.3%（HIGH），触发每3个月随访。
+- DMFS（12.9%）和LRRFS（4.4%）均≥3%，双方向检查均需执行。
+- 年度安全检查要求在治疗后0-3年每年至少进行鼻咽颈部MRI和胸部CT，确保长期监测。
